@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>iDENTify Patient Information System</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: { primary: "#9B4C9C", secondary: "#F3E5F5" },
+            borderRadius: {
+              none: "0px",
+              sm: "4px",
+              DEFAULT: "8px",
+              md: "12px",
+              lg: "16px",
+              xl: "20px",
+              "2xl": "24px",
+              "3xl": "32px",
+              full: "9999px",
+              button: "8px",
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      :where([class^="ri-"])::before {
+        content: "\f3c2";
+      }
+      body {
+        background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .login-container {
+        width: 100%;
+        max-width: 1024px;
+        min-height: 600px;
+        display: flex;
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+      .login-form {
+        flex: 1;
+        padding: 48px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .login-image {
+        flex: 1;
+        background: #f3e5f5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 48px;
+      }
+      .tooth-icon {
+        width: 400px;
+        height: 400px;
+        position: relative;
+      }
+      .tooth-center {
+        width: 200px;
+        height: 200px;
+        background: white;
+        border-radius: 50%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .tooth-orbit {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        animation: rotate 20s linear infinite;
+      }
+      .tooth-satellite {
+        width: 60px;
+        height: 60px;
+        background: white;
+        border-radius: 50%;
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .tooth-satellite i {
+        font-size: 24px;
+        color: #9b4c9c;
+      }
+      @keyframes rotate {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-container">
+      <div class="login-form">
+        <div class="mb-12">
+          <img
+            src="https://www.lpu.edu.ph/images/logo.png"
+            alt="LPU Logo"
+            class="h-12 mb-8"
+          />
+          <h1 class="text-2xl font-semibold mb-2">
+            iDENTify Patient Information System
+          </h1>
+          <p class="text-gray-500">Please login to continue</p>
+        </div>
+        <form id="loginForm">
+          <div class="space-y-4">
+            <div>
+              <input
+                type="text"
+                id="email"
+                placeholder="Username"
+                class="w-full px-4 py-3 rounded bg-gray-50 border-none focus:ring-2 focus:ring-primary/50"
+                required
+              />
+            </div>
+            <div id="loginError" class="text-red-500 text-sm mt-2 hidden"></div>
+            <div>
+              <input
+                type="password"
+                id="password"
+                placeholder="Password"
+                class="w-full px-4 py-3 rounded bg-gray-50 border-none focus:ring-2 focus:ring-primary/50"
+                required
+              />
+            </div>
+            <button
+              type="submit"
+              class="block text-center w-full bg-primary text-white py-3 rounded-button hover:bg-primary/90"
+            >
+              Log In
+            </button>
+          </div>
+        </form>
+        <script>
+          document.addEventListener("DOMContentLoaded", function () {
+            const loginForm = document.getElementById("loginForm");
+            loginForm.addEventListener("submit", function (e) {
+              e.preventDefault();
+              const email = document.getElementById("email").value;
+              const password = document.getElementById("password").value;
+              const errorDiv = document.getElementById("loginError");
+
+              if (email === "admin" && password === "password") {
+                window.location.href = "dashboard.html";
+              } else {
+                errorDiv.textContent = "Invalid username or password";
+                errorDiv.classList.remove("hidden");
+              }
+            });
+          });
+        </script>
+      </div>
+      <div class="login-image">
+        <div class="tooth-icon">
+          <div class="tooth-center"></div>
+          <div class="tooth-orbit">
+            <div
+              class="tooth-satellite"
+              style="top: 0; left: 50%; transform: translate(-50%, -50%)"
+            >
+              <i class="ri-heart-pulse-line"></i>
+            </div>
+            <div
+              class="tooth-satellite"
+              style="top: 50%; right: 0; transform: translate(50%, -50%)"
+            >
+              <i class="ri-microscope-line"></i>
+            </div>
+            <div
+              class="tooth-satellite"
+              style="bottom: 0; left: 50%; transform: translate(-50%, 50%)"
+            >
+              <i class="ri-capsule-line"></i>
+            </div>
+            <div
+              class="tooth-satellite"
+              style="top: 50%; left: 0; transform: translate(-50%, -50%)"
+            >
+              <i class="ri-syringe-line"></i>
+            </div>
+            <div
+              class="tooth-satellite"
+              style="top: 15%; left: 15%; transform: translate(-50%, -50%)"
+            >
+              <i class="ri-stethoscope-line"></i>
+            </div>
+            <div
+              class="tooth-satellite"
+              style="top: 15%; right: 15%; transform: translate(50%, -50%)"
+            >
+              <i class="ri-test-tube-line"></i>
+            </div>
+            <div
+              class="tooth-satellite"
+              style="bottom: 15%; right: 15%; transform: translate(50%, 50%)"
+            >
+              <i class="ri-medicine-bottle-line"></i>
+            </div>
+            <div
+              class="tooth-satellite"
+              style="bottom: 15%; left: 15%; transform: translate(-50%, 50%)"
+            >
+              <i class="ri-mental-health-line"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

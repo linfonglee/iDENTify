@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>iDENTify - Dental Patient Information and Treatment Tracker</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: { primary: "#D26BDD", secondary: "#F9E8FB" },
+            borderRadius: {
+              none: "0px",
+              sm: "4px",
+              DEFAULT: "8px",
+              md: "12px",
+              lg: "16px",
+              xl: "20px",
+              "2xl": "24px",
+              "3xl": "32px",
+              full: "9999px",
+              button: "8px",
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+    <style>
+      :where([class^="ri-"])::before { content: "\f3c2"; }
+      body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f9fafb;
+      }
+      input[type="number"]::-webkit-inner-spin-button,
+      input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+      }
+      input[type="number"] {
+      -moz-appearance: textfield;
+      }
+      .custom-checkbox {
+      position: relative;
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      background-color: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 4px;
+      cursor: pointer;
+      }
+      .custom-checkbox.checked {
+      background-color: #D26BDD;
+      border-color: #D26BDD;
+      }
+      .custom-checkbox.checked::after {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 2px;
+      width: 6px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+      }
+      .custom-switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+      }
+      .custom-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+      }
+      .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #e2e8f0;
+      transition: .4s;
+      border-radius: 24px;
+      }
+      .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+      }
+      input:checked + .slider {
+      background-color: #D26BDD;
+      }
+      input:checked + .slider:before {
+      transform: translateX(20px);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="min-h-screen flex flex-col">
+      <!-- Header -->
+      <header class="bg-white shadow-sm">
+  <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+    <div class="flex items-center">
+      <h1 class="text-2xl font-['Pacifico'] text-primary">iDENTify</h1>
+      <span class="ml-2 text-gray-500 text-sm">Dental Patient Tracker</span>
+    </div>
+    <div class="flex items-center">
+      <a
+        href="index.html"
+        class="flex items-center px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-button whitespace-nowrap"
+      >
+        <div class="w-5 h-5 flex items-center justify-center mr-2">
+          <i class="ri-logout-box-line"></i>
+        </div>
+        Logout
+      </a>
+    </div>
+  </div>
+</header>
+
+      <!-- Main Content -->
+      <div class="flex-1 flex">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white shadow-sm hidden lg:block">
+          <nav class="p-4">
+            <ul class="space-y-2">
+              <li>
+                <a
+                  href="#"
+                  class="flex items-center p-3 text-primary bg-primary/10 rounded"
+                >
+                  <div class="w-6 h-6 flex items-center justify-center mr-3">
+                    <i class="ri-dashboard-line"></i>
+                  </div>
+                  <span>Dashboard</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="flex items-center p-3 text-gray-700 hover:bg-gray-50 rounded"
+                >
+                  <div class="w-6 h-6 flex items-center justify-center mr-3">
+                    <i class="ri-user-line"></i>
+                  </div>
+                  <span>Patients</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </aside>
+        <!-- Dashboard Content -->
+        <main class="flex-1 p-6">
+          <div class="flex flex-col h-full">
+            <div class="mb-6">
+              <h2 class="text-2xl font-semibold text-gray-800">
+                Patient Dashboard
+              </h2>
+              <p class="text-gray-500">
+                Manage your dental patients and their treatments
+              </p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+              <div class="bg-white p-6 rounded shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                  <h3 class="text-lg font-medium text-gray-800">
+                    Today's Appointments
+                  </h3>
+                  <div
+                    class="w-8 h-8 flex items-center justify-center rounded-full bg-primary/10 text-primary"
+                  >
+                    <i class="ri-calendar-line"></i>
+                  </div>
+                </div>
+                <p class="text-3xl font-bold text-gray-800">8</p>
+                <div class="flex items-center mt-2">
+                  <div
+                    class="w-4 h-4 flex items-center justify-center text-green-500"
+                  >
+                    <i class="ri-arrow-up-line"></i>
+                  </div>
+                  <span class="text-sm text-green-500 ml-1"
+                    >12% from yesterday</span
+                  >
+                </div>
+              </div>
+              <div class="bg-white p-6 rounded shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                  <h3 class="text-lg font-medium text-gray-800">
+                    New Patients
+                  </h3>
+                  <div
+                    class="w-8 h-8 flex items-center justify-center rounded-full bg-primary/10 text-primary"
+                  >
+                    <i class="ri-user-add-line"></i>
+                  </div>
+                </div>
+                <p class="text-3xl font-bold text-gray-800">3</p>
+                <div class="flex items-center mt-2">
+                  <div
+                    class="w-4 h-4 flex items-center justify-center text-green-500"
+                  >
+                    <i class="ri-arrow-up-line"></i>
+                  </div>
+                  <span class="text-sm text-green-500 ml-1"
+                    >5% from last week</span
+                  >
+                </div>
+              </div>
+              <div class="bg-white p-6 rounded shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                  <h3 class="text-lg font-medium text-gray-800">
+                    Pending Records
+                  </h3>
+                  <div
+                    class="w-8 h-8 flex items-center justify-center rounded-full bg-primary/10 text-primary"
+                  >
+                    <i class="ri-file-list-line"></i>
+                  </div>
+                </div>
+                <p class="text-3xl font-bold text-gray-800">12</p>
+                <div class="flex items-center mt-2">
+                  <div
+                    class="w-4 h-4 flex items-center justify-center text-red-500"
+                  >
+                    <i class="ri-arrow-up-line"></i>
+                  </div>
+                  <span class="text-sm text-red-500 ml-1"
+                    >8% from yesterday</span
+                  >
+                </div>
+              </div>
+            </div>
+            <!-- Patient Section -->
+            <div class="bg-white rounded shadow-sm flex-1">
+              <div class="p-6 border-b">
+                <div class="flex justify-between items-center">
+                  <h3 class="text-xl font-semibold text-gray-800">
+                    Patient List
+                  </h3>
+                  <button
+                    id="addPatientBtn"
+                    class="bg-primary text-white px-4 py-2 rounded-button flex items-center whitespace-nowrap"
+                  >
+                    <div class="w-5 h-5 flex items-center justify-center mr-2">
+                      <i class="ri-user-add-line"></i>
+                    </div>
+                    Add Patient
+                  </button>
+                </div>
+                <div class="mt-4 relative">
+                  <input
+                    type="text"
+                    placeholder="Search patients..."
+                    class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
+                  />
+                  <div
+                    class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 flex items-center justify-center text-gray-400"
+                  >
+                    <i class="ri-search-line"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full">
+                  <thead>
+                    <tr class="bg-gray-50 text-left">
+                      <th
+                        class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Name
+                      </th>
+                      <th
+                        class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Age
+                      </th>
+                      <th
+                        class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Last Visit
+                      </th>
+                      <th
+                        class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-200">
+                    <tr class="hover:bg-gray-50">
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                          <div
+                            class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-500 mr-3"
+                          >
+                            <span class="text-sm font-medium">JD</span>
+                          </div>
+                          <div>
+                            <div class="text-sm font-medium text-gray-900">
+                              James Davidson
+                            </div>
+                            <div class="text-xs text-gray-500">#12345</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        42
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        April 20, 2025
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm font-medium"
+                      >
+                        <div class="flex space-x-2">
+                          <button
+                            class="edit-btn w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-blue-600"
+                          >
+                            <i class="ri-edit-line"></i>
+                          </button>
+                          <button
+                            class="remove-btn w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-red-600"
+                          >
+                            <i class="ri-delete-bin-line"></i>
+                          </button>
+                          <button
+                            class="print-btn w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-600"
+                          >
+                            <i class="ri-printer-line"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-gray-50">
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                          <div
+                            class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-500 mr-3"
+                          >
+                            <span class="text-sm font-medium">EJ</span>
+                          </div>
+                          <div>
+                            <div class="text-sm font-medium text-gray-900">
+                              Emily Johnson
+                            </div>
+                            <div class="text-xs text-gray-500">#12346</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        35
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        April 18, 2025
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm font-medium"
+                      >
+                        <div class="flex space-x-2">
+                          <button
+                            class="edit-btn w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-blue-600"
+                          >
+                            <i class="ri-edit-line"></i>
+                          </button>
+                          <button
+                            class="remove-btn w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-red-600"
+                          >
+                            <i class="ri-delete-bin-line"></i>
+                          </button>
+                          <button
+                            class="print-btn w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-600"
+                          >
+                            <i class="ri-printer-line"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-gray-50">
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                          <div
+                            class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-500 mr-3"
+                          >
+                            <span class="text-sm font-medium">RW</span>
+                          </div>
+                          <div>
+                            <div class="text-sm font-medium text-gray-900">
+                              Robert Williams
+                            </div>
+                            <div class="text-xs text-gray-500">#12347</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        58
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        April 15, 2025
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm font-medium"
+                      >
+                        <div class="flex space-x-2">
+                          <button
+                            class="edit-btn w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-blue-600"
+                          >
+                            <i class="ri-edit-line"></i>
+                          </button>
+                          <button
+                            class="remove-btn w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-red-600"
+                          >
+                            <i class="ri-delete-bin-line"></i>
+                          </button>
+                          <button
+                            class="print-btn w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-600"
+                          >
+                            <i class="ri-printer-line"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-gray-50">
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                          <div
+                            class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-red-500 mr-3"
+                          >
+                            <span class="text-sm font-medium">SL</span>
+                          </div>
+                          <div>
+                            <div class="text-sm font-medium text-gray-900">
+                              Sophia Lee
+                            </div>
+                            <div class="text-xs text-gray-500">#12348</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        29
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        April 10, 2025
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm font-medium"
+                      >
+                        <div class="flex space-x-2">
+                          <button
+                            class="edit-btn w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-blue-600"
+                          >
+                            <i class="ri-edit-line"></i>
+                          </button>
+                          <button
+                            class="remove-btn w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-red-600"
+                          >
+                            <i class="ri-delete-bin-line"></i>
+                          </button>
+                          <button
+                            class="print-btn w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-600"
+                          >
+                            <i class="ri-printer-line"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-gray-50">
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                          <div
+                            class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 mr-3"
+                          >
+                            <span class="text-sm font-medium">MB</span>
+                          </div>
+                          <div>
+                            <div class="text-sm font-medium text-gray-900">
+                              Michael Brown
+                            </div>
+                            <div class="text-xs text-gray-500">#12349</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        47
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        April 5, 2025
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm font-medium"
+                      >
+                        <div class="flex space-x-2">
+                          <button
+                            class="edit-btn w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-blue-600"
+                          >
+                            <i class="ri-edit-line"></i>
+                          </button>
+                          <button
+                            class="remove-btn w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-red-600"
+                          >
+                            <i class="ri-delete-bin-line"></i>
+                          </button>
+                          <button
+                            class="print-btn w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-600"
+                          >
+                            <i class="ri-printer-line"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="px-6 py-4 border-t">
+                <div class="flex items-center justify-between">
+                  <div class="text-sm text-gray-500">
+                    Showing 5 of 24 patients
+                  </div>
+                  <div class="flex space-x-2">
+                    <button
+                      class="px-3 py-1 border border-gray-300 rounded text-sm text-gray-700 hover:bg-gray-50 whitespace-nowrap"
+                    >
+                      Previous
+                    </button>
+                    <button
+                      class="px-3 py-1 bg-primary text-white rounded text-sm hover:bg-primary/90 whitespace-nowrap"
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <!-- Add Patient Modal -->
+    <div
+      id="addPatientModal"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden"
+    >
+      <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+        <div class="flex justify-between items-center p-6 border-b">
+          <h3 class="text-lg font-semibold text-gray-800">Add Patient</h3>
+          <button
+            id="closeAddPatientModal"
+            class="text-gray-400 hover:text-gray-500"
+          >
+            <div class="w-6 h-6 flex items-center justify-center">
+              <i class="ri-close-line"></i>
+            </div>
+          </button>
+        </div>
+        <div class="p-6">
+          <form id="addPatientForm">
+            <div class="space-y-4">
+              <div>
+                <label
+                  for="patientName"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                  >Patient Name</label
+                >
+                <input
+                  type="text"
+                  id="patientName"
+                  name="patientName"
+                  class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary/50"
+                />
+              </div>
+              <div>
+                <label
+                  for="patientNumber"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                  >Patient Number</label
+                >
+                <input
+                  type="number"
+                  id="patientNumber"
+                  name="patientNumber"
+                  class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary/50"
+                />
+              </div>
+              <div>
+                <label
+                  for="patientAge"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                  >Age</label
+                >
+                <input
+                  type="number"
+                  id="patientAge"
+                  name="patientAge"
+                  class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary/50"
+                />
+              </div>
+              <div>
+                <label
+                  for="visitDate"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                  >Date of Visit</label
+                >
+                <input
+                  type="date"
+                  id="visitDate"
+                  name="visitDate"
+                  class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary/50"
+                />
+              </div>
+            </div>
+            <div class="mt-6">
+              <button
+                type="submit"
+                class="w-full bg-primary text-white py-2 px-4 rounded-button hover:bg-primary/90 whitespace-nowrap"
+              >
+                Save
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- Delete Confirmation Modal -->
+    <div
+      id="deleteConfirmationModal"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden"
+    >
+      <div class="bg-white rounded-lg shadow-xl w-full max-w-sm">
+        <div class="p-6">
+          <div class="flex items-center justify-center mb-4">
+            <div
+              class="w-12 h-12 flex items-center justify-center rounded-full bg-red-100 text-red-500"
+            >
+              <i class="ri-error-warning-line text-2xl"></i>
+            </div>
+          </div>
+          <h3 class="text-lg font-medium text-center text-gray-900 mb-2">
+            Delete Patient
+          </h3>
+          <p class="text-center text-gray-500 mb-6">
+            Are you sure you want to delete this patient?
+          </p>
+          <div class="flex space-x-3">
+            <button
+              id="cancelDeleteBtn"
+              class="flex-1 px-4 py-2 border border-gray-300 rounded-button text-gray-700 hover:bg-gray-50 whitespace-nowrap"
+            >
+              Cancel
+            </button>
+            <button
+              id="confirmDeleteBtn"
+              class="flex-1 px-4 py-2 bg-red-600 text-white rounded-button hover:bg-red-700 whitespace-nowrap"
+            >
+              Yes, Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Patient Information Record (5-page form) -->
+    <div
+      id="patientInfoModal"
+      class="fixed inset-0 bg-white z-50 overflow-auto hidden"
+    >
+      <div class="min-h-screen flex flex-col">
+        <header class="bg-white shadow-sm">
+          <div
+            class="container mx-auto px-4 py-4 flex justify-between items-center"
+          >
+            <div class="flex items-center">
+              <button
+                id="closePatientInfoModal"
+                class="mr-4 text-gray-500 hover:text-gray-700"
+              >
+                <div class="w-6 h-6 flex items-center justify-center">
+                  <i class="ri-arrow-left-line"></i>
+                </div>
+              </button>
+              <h1 class="text-xl font-semibold text-gray-800">
+                Patient Information Record
+              </h1>
+            </div>
+            <button
+              id="savePatientInfoBtn"
+              class="bg-primary text-white px-4 py-2 rounded-button whitespace-nowrap"
+            >
+              Save Record
+            </button>
+          </div>
+        </header>
+        <div class="flex-1 container mx-auto px-4 py-6">
+          <!-- Form Navigation -->
+          <div class="mb-8">
+            <div class="flex items-center justify-between">
+              <div class="w-full flex items-center">
+                <div
+                  class="relative flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white text-sm font-medium z-10"
+                >
+                  1
+                </div>
+                <div class="flex-1 h-1 bg-primary"></div>
+                <div
+                  class="relative flex items-center justify-center w-8 h-8 rounded-full bg-gray-200 text-gray-700 text-sm font-medium z-10"
+                >
+                  2
+                </div>
+                <div class="flex-1 h-1 bg-gray-200"></div>
+                <div
+                  class="relative flex items-center justify-center w-8 h-8 rounded-full bg-gray-200 text-gray-700 text-sm font-medium z-10"
+                >
+                  3
+                </div>
+                <div class="flex-1 h-1 bg-gray-200"></div>
+                <div
+                  class="relative flex items-center justify-center w-8 h-8 rounded-full bg-gray-200 text-gray-700 text-sm font-medium z-10"
+                >
+                  4
+                </div>
+                <div class="flex-1 h-1 bg-gray-200"></div>
+                <div
+                  class="relative flex items-center justify-center w-8 h-8 rounded-full bg-gray-200 text-gray-700 text-sm font-medium z-10"
+                >
+                  5
+                </div>
+              </div>
+            </div>
+            <div class="flex justify-between mt-2 text-sm">
+              <div class="text-primary font-medium">Personal Info</div>
+              <div class="text-gray-500">Medical History</div>
+              <div class="text-gray-500">Dental History</div>
+              <div class="text-gray-500">Treatment Plan</div>
+              <div class="text-gray-500">Consent Form</div>
+            </div>
+          </div>
+          <!-- Form Pages -->
+          <div class="form-pages">
+            <!-- Page 1: Personal Information -->
+            <div class="form-page active">
+              <div class="bg-white rounded shadow-sm p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                  Personal Information
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >Full Name</label
+                    >
+                    <input
+                      type="text"
+                      class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >Date of Birth</label
+                    >
+                    <input
+                      type="date"
+                      class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >Email</label
+                    >
+                    <input
+                      type="email"
+                      class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >Phone Number</label
+                    >
+                    <input
+                      type="tel"
+                      class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    />
+                  </div>
+                  <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >Address</label
+                    >
+                    <input
+                      type="text"
+                      class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >City</label
+                    >
+                    <input
+                      type="text"
+                      class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >Zip Code</label
+                    >
+                    <input
+                      type="text"
+                      class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >Emergency Contact Name</label
+                    >
+                    <input
+                      type="text"
+                      class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >Emergency Contact Phone</label
+                    >
+                    <input
+                      type="tel"
+                      class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="mt-6 flex justify-end">
+                <button
+                  class="next-btn bg-primary text-white px-6 py-2 rounded-button whitespace-nowrap"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+            <!-- Other pages would be added here -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Print Selection Page -->
+    <div
+      id="printSelectionModal"
+      class="fixed inset-0 bg-white z-50 overflow-auto hidden"
+    >
+      <div class="min-h-screen flex flex-col">
+        <header class="bg-white shadow-sm">
+          <div
+            class="container mx-auto px-4 py-4 flex justify-between items-center"
+          >
+            <div class="flex items-center">
+              <button
+                id="closePrintSelectionModal"
+                class="mr-4 text-gray-500 hover:text-gray-700"
+              >
+                <div class="w-6 h-6 flex items-center justify-center">
+                  <i class="ri-arrow-left-line"></i>
+                </div>
+              </button>
+              <h1 class="text-xl font-semibold text-gray-800">
+                Print Patient Record
+              </h1>
+            </div>
+            <button
+              id="printRecordBtn"
+              class="bg-primary text-white px-4 py-2 rounded-button flex items-center whitespace-nowrap"
+            >
+              <div class="w-5 h-5 flex items-center justify-center mr-2">
+                <i class="ri-printer-line"></i>
+              </div>
+              Print
+            </button>
+          </div>
+        </header>
+        <div class="flex-1 container mx-auto px-4 py-6">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-1">
+              <div class="bg-white rounded shadow-sm p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                  Select Pages to Print
+                </h3>
+                <div class="flex items-center justify-between mb-4">
+                  <span class="text-sm font-medium text-gray-700"
+                    >Select All</span
+                  >
+                  <label class="custom-switch">
+                    <input type="checkbox" id="selectAll" />
+                    <span class="slider"></span>
+                  </label>
+                </div>
+                <div class="space-y-4 mt-6">
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm text-gray-700"
+                      >Personal Information</span
+                    >
+                    <div class="custom-checkbox" data-page="1"></div>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm text-gray-700">Medical History</span>
+                    <div class="custom-checkbox" data-page="2"></div>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm text-gray-700">Dental History</span>
+                    <div class="custom-checkbox" data-page="3"></div>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm text-gray-700">Treatment Plan</span>
+                    <div class="custom-checkbox" data-page="4"></div>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm text-gray-700">Consent Form</span>
+                    <div class="custom-checkbox" data-page="5"></div>
+                  </div>
+                </div>
+                <div class="mt-6 pt-6 border-t">
+                  <h4 class="text-sm font-semibold text-gray-800 mb-4">
+                    Print Settings
+                  </h4>
+                  <div class="space-y-4">
+                    <div>
+                      <label class="block text-sm text-gray-700 mb-1"
+                        >Paper Size</label
+                      >
+                      <div class="relative">
+                        <select
+                          class="w-full px-4 py-2 pr-8 border border-gray-300 rounded appearance-none focus:outline-none focus:ring-2 focus:ring-primary/50 bg-white"
+                        >
+                          <option>Letter (8.5" x 11")</option>
+                          <option>A4 (210 x 297 mm)</option>
+                          <option>Legal (8.5" x 14")</option>
+                        </select>
+                        <div
+                          class="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none w-4 h-4 flex items-center justify-center text-gray-400"
+                        >
+                          <i class="ri-arrow-down-s-line"></i>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <label class="block text-sm text-gray-700 mb-1"
+                        >Orientation</label
+                      >
+                      <div class="flex space-x-4">
+                        <label class="flex items-center">
+                          <input
+                            type="radio"
+                            name="orientation"
+                            class="hidden"
+                            checked
+                          />
+                          <div
+                            class="w-4 h-4 rounded-full border border-gray-300 mr-2 flex items-center justify-center"
+                          >
+                            <div class="w-2 h-2 rounded-full bg-primary"></div>
+                          </div>
+                          <span class="text-sm text-gray-700">Portrait</span>
+                        </label>
+                        <label class="flex items-center">
+                          <input
+                            type="radio"
+                            name="orientation"
+                            class="hidden"
+                          />
+                          <div
+                            class="w-4 h-4 rounded-full border border-gray-300 mr-2 flex items-center justify-center"
+                          >
+                            <div class="w-2 h-2 rounded-full bg-white"></div>
+                          </div>
+                          <span class="text-sm text-gray-700">Landscape</span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="lg:col-span-2">
+              <div class="bg-white rounded shadow-sm p-6 h-full">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                  Preview
+                </h3>
+                <div
+                  class="border rounded p-4 h-[calc(100%-3rem)] flex items-center justify-center bg-gray-50"
+                >
+                  <div
+                    class="bg-white shadow-sm w-full max-w-md aspect-[1/1.414] p-8"
+                  >
+                    <div class="border-b pb-4 mb-4">
+                      <h4 class="text-xl font-semibold text-gray-800 mb-1">
+                        James Davidson
+                      </h4>
+                      <p class="text-sm text-gray-500">Patient ID: #JD12345</p>
+                    </div>
+                    <div class="space-y-4">
+                      <div>
+                        <h5 class="text-sm font-medium text-gray-700">
+                          Personal Information
+                        </h5>
+                        <div class="mt-2 grid grid-cols-2 gap-4 text-sm">
+                          <div>
+                            <p class="text-gray-500">Date of Birth</p>
+                            <p class="font-medium">05/12/1983</p>
+                          </div>
+                          <div>
+                            <p class="text-gray-500">Age</p>
+                            <p class="font-medium">42</p>
+                          </div>
+                          <div>
+                            <p class="text-gray-500">Email</p>
+                            <p class="font-medium">
+                              james.davidson@example.com
+                            </p>
+                          </div>
+                          <div>
+                            <p class="text-gray-500">Phone</p>
+                            <p class="font-medium">(555) 123-4567</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div>
+                        <h5 class="text-sm font-medium text-gray-700">
+                          Address
+                        </h5>
+                        <p class="text-sm mt-2">
+                          123 Main Street, Apt 4B<br />New York, NY 10001
+                        </p>
+                      </div>
+                      <div>
+                        <h5 class="text-sm font-medium text-gray-700">
+                          Emergency Contact
+                        </h5>
+                        <p class="text-sm mt-2">
+                          Sarah Davidson<br />(555) 987-6543
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Add Patient Modal
+        const addPatientBtn = document.getElementById("addPatientBtn");
+        const addPatientModal = document.getElementById("addPatientModal");
+        const closeAddPatientModal = document.getElementById("closeAddPatientModal");
+        const addPatientForm = document.getElementById("addPatientForm");
+        addPatientBtn.addEventListener("click", function () {
+          addPatientModal.classList.remove("hidden");
+        });
+        closeAddPatientModal.addEventListener("click", function () {
+          addPatientModal.classList.add("hidden");
+        });
+        addPatientForm.addEventListener("submit", function (e) {
+          e.preventDefault();
+          // Here you would normally process the form data
+          addPatientModal.classList.add("hidden");
+        });
+        // Delete Confirmation Modal
+        const removeButtons = document.querySelectorAll(".remove-btn");
+        const deleteConfirmationModal = document.getElementById(
+          "deleteConfirmationModal",
+        );
+        const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
+        const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+        removeButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            deleteConfirmationModal.classList.remove("hidden");
+          });
+        });
+        cancelDeleteBtn.addEventListener("click", function () {
+          deleteConfirmationModal.classList.add("hidden");
+        });
+        confirmDeleteBtn.addEventListener("click", function () {
+          // Here you would normally delete the patient
+          deleteConfirmationModal.classList.add("hidden");
+        });
+      });
+      document.addEventListener("DOMContentLoaded", function () {
+        // Patient Information Record Modal
+        const editButtons = document.querySelectorAll(".edit-btn");
+        const patientInfoModal = document.getElementById("patientInfoModal");
+        const closePatientInfoModal = document.getElementById(
+          "closePatientInfoModal",
+        );
+        const savePatientInfoBtn = document.getElementById("savePatientInfoBtn");
+        editButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            patientInfoModal.classList.remove("hidden");
+          });
+        });
+        closePatientInfoModal.addEventListener("click", function () {
+          patientInfoModal.classList.add("hidden");
+        });
+        savePatientInfoBtn.addEventListener("click", function () {
+          // Here you would normally save the patient info
+          patientInfoModal.classList.add("hidden");
+        });
+        // Form Navigation
+        const nextButtons = document.querySelectorAll(".next-btn");
+        nextButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            // Here you would normally navigate to the next page
+            // For demo purposes, we'll just close the modal
+            patientInfoModal.classList.add("hidden");
+          });
+        });
+      });
+      document.addEventListener("DOMContentLoaded", function () {
+        // Print Selection Modal
+        const printButtons = document.querySelectorAll(".print-btn");
+        const printSelectionModal = document.getElementById("printSelectionModal");
+        const closePrintSelectionModal = document.getElementById(
+          "closePrintSelectionModal",
+        );
+        const printRecordBtn = document.getElementById("printRecordBtn");
+        printButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            printSelectionModal.classList.remove("hidden");
+          });
+        });
+        closePrintSelectionModal.addEventListener("click", function () {
+          printSelectionModal.classList.add("hidden");
+        });
+        printRecordBtn.addEventListener("click", function () {
+          // Here you would normally print the selected pages
+          window.print();
+        });
+        // Checkboxes
+        const checkboxes = document.querySelectorAll(".custom-checkbox");
+        const selectAllCheckbox = document.getElementById("selectAll");
+        checkboxes.forEach((checkbox) => {
+          checkbox.addEventListener("click", function () {
+            this.classList.toggle("checked");
+            updateSelectAllState();
+          });
+        });
+        selectAllCheckbox.addEventListener("change", function () {
+          checkboxes.forEach((checkbox) => {
+            if (this.checked) {
+              checkbox.classList.add("checked");
+            } else {
+              checkbox.classList.remove("checked");
+            }
+          });
+        });
+        function updateSelectAllState() {
+          const checkedCount = document.querySelectorAll(
+            ".custom-checkbox.checked",
+          ).length;
+          selectAllCheckbox.checked = checkedCount === checkboxes.length;
+        }
+        // Initialize radio buttons
+        const radioButtons = document.querySelectorAll('input[type="radio"]');
+        radioButtons.forEach((radio) => {
+          radio.addEventListener("change", function () {
+            // Reset all radio indicators
+            document
+              .querySelectorAll('input[name="' + this.name + '"] + div div')
+              .forEach((indicator) => {
+                indicator.classList.remove("bg-primary");
+                indicator.classList.add("bg-white");
+              });
+            // Set the selected indicator
+            if (this.checked) {
+              const indicator = this.nextElementSibling.querySelector("div");
+              indicator.classList.remove("bg-white");
+              indicator.classList.add("bg-primary");
+            }
+          });
+        });
+        // Initialize the checked state for default selected radio
+        document.querySelectorAll('input[type="radio"]:checked').forEach((radio) => {
+          const indicator = radio.nextElementSibling.querySelector("div");
+          indicator.classList.remove("bg-white");
+          indicator.classList.add("bg-primary");
+        });
+      });
+    </script>
+  </body>
+</html>
